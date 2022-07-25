@@ -1,15 +1,17 @@
 const User = require("../../models/user.model")
+const Manager = require("../../models/manager.model")
+const _ = require('lodash');
 
 module.exports = {
     managerById: async () => {
         try {
             const usersFetched = await User.find();
-            const managersFetched = await User.findOne(manager=>manager._id===args.id);
+            const managersFetched = await User.findOne(manager => manager._id === args.id);
             return managersFetched.map(manager => {
                 return {
                     ...manager._doc,
                     _id: manager.id,
-                    manager: usersFetched.findOne(user=>user.id===manager.userId),
+                    manager: _.find(usersFetched, { _id: manager.userId }),
                     createdAt: new Date(manager._doc.createdAt).toISOString(),
                 }
             })
@@ -21,13 +23,16 @@ module.exports = {
     managers: async () => {
         try {
             const usersFetched = await User.find();
-            console.log(usersFetched);
-            const managersFetched = await User.find();
+            const managersFetched = await Manager.find();
             return managersFetched.map(manager => {
+                const userPerManager = _.find(usersFetched, userItem=>userItem._id==manager.userId);
+                console.log(userPerManager)
                 return {
                     ...manager._doc,
                     _id: manager.id,
-                    manager: usersFetched.findOne(user=>user.id===manager.userId),
+                    firstName:userPerManager.firstName,
+                    lastName:userPerManager.lastName,
+                    email:userPerManager.email,
                     createdAt: new Date(manager._doc.createdAt).toISOString(),
                 }
             })
@@ -42,7 +47,8 @@ module.exports = {
                 firstName,
                 lastName,
                 email,
-                password } = args.user
+                password
+            } = args.manager
             const user = new User({
                 firstName,
                 lastName,
@@ -50,9 +56,9 @@ module.exports = {
                 password
             })
             const newUser = await user.save()
-            const newManager = await {
-                userId:newUser.id
-            }.save();
+            const newManager = await (new Manager({
+                userId: newUser.id
+            })).save();
             return { ...newManager._doc, _id: newUser.id }
         } catch (error) {
             throw error

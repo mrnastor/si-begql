@@ -5,7 +5,7 @@ const graphqlResolvers = require("./graphql/resolvers")
 const mongoose = require("mongoose")
 
 const app = express()
-const PORT = 3005;
+const PORT = process.env.PORT || 80;
 app.use(
     "/graphql",
     graphqlHTTP({
@@ -18,7 +18,7 @@ const uri = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWOR
 const options = { useNewUrlParser: true, useUnifiedTopology: true }
 
 mongoose.connect(uri, options)
-    .then(() => app.listen(PORT, console.log("Server is running")))
+    .then(() => app.listen(PORT, console.log("Server is running in "+PORT)))
     .catch(error => {
         throw error
     })
