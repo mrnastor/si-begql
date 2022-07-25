@@ -3,7 +3,7 @@ const Schema = mongoose.Schema
 
 const industryExperienceSchema = new Schema(
   {
-    userId: {
+    employeeId: {
       type: String,
       required: true,
     },
@@ -12,7 +12,7 @@ const industryExperienceSchema = new Schema(
       required: true,
     },
     yearsExperience:{
-      type: Int,
+      type: Number,
       required: true,
     },
   },

@@ -22,5 +22,3 @@ mongoose.connect(uri, options)
     .catch(error => {
         throw error
     })
-
-// app.listen(APP_PORT, () => console.log("Server is running on localhost:"+APP_PORT))

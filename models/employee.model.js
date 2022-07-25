@@ -11,9 +11,17 @@ const employeeSchema = new Schema(
       type: String,
       required: true,
     },
-    metadataId:{
+    capabilityId:{
       type: String,
       required: true,
+    },
+    primarySkillId:{
+      type: String,
+      required: false,
+    },
+    secondarySkillId:{
+      type: String,
+      required: false,
     },
   },
   { timestamps: true }

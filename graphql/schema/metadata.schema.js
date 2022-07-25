@@ -16,7 +16,8 @@ let metadatachema = makeExecutableSchema({
     }
     type Query {
       metadatas:[Metadata!]
-      metadataByName(name: String!):Metadata!
+      metadataByType(type: String!):[Metadata!]
+      capabilityById(id:String!):Metadata!
     }
     type Mutation {
       addMetadata(metadata:MetadataInput): Metadata

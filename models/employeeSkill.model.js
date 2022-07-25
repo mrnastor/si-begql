@@ -3,7 +3,7 @@ const Schema = mongoose.Schema
 
 const employeeSkillSchema = new Schema(
   {
-    userId: {
+    employeeId: {
       type: String,
       required: true,
     },
@@ -12,11 +12,11 @@ const employeeSkillSchema = new Schema(
       required: true,
     },
     rate:{
-      type: Int,
+      type: Number,
       required: true,
     },
     yearsExperience:{
-      type: Int,
+      type: Number,
       required: true,
     },
   },

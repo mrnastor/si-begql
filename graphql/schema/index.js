@@ -4,12 +4,18 @@ const {stitchSchemas} = require('@graphql-tools/stitch');
 const UserSchema = require('./user.schema');
 const MetadataSchema = require('./metadata.schema');
 const ManagerSchema = require('./manager.schema');
+const IndustryExperienceSchema = require('./industryExperience.schema');
+const EmployeeSkillSchema = require('./employeeSkill.schema');
+const EmployeeSchema = require('./employee.schema');
 
 const gatewaySchema =  stitchSchemas({
   subschemas: [
     UserSchema,
     MetadataSchema,
     ManagerSchema,
+    IndustryExperienceSchema,
+    EmployeeSkillSchema,
+    EmployeeSchema,
   ]
 });
 

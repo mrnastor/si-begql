@@ -1,5 +1,4 @@
 const { makeExecutableSchema } = require('@graphql-tools/schema');
-const ManagerResolver = require( "../resolvers/manager.resolver"); 
 
 let managerSchema = makeExecutableSchema({
   typeDefs: /* GraphQL */ `

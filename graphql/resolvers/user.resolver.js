@@ -1,3 +1,6 @@
+const ObjectId = require('mongodb').ObjectId;
+const _ = require('lodash');
+
 const User = require("../../models/user.model")
 
 module.exports = {
@@ -20,6 +23,16 @@ module.exports = {
         try {
             // const usersFetched = await User.findOne(obj => obj.firstName === args.firstName)
             const tempList = await User.findOne({...args});
+            return tempList
+        } catch (error) {
+            throw error
+        }
+    },
+
+    userById: async args => {
+        try {
+            console.log("from user", args)
+            const tempList = _.find(await User.find(), o=>o._id.equals(new ObjectId(args.userId)));
             return tempList
         } catch (error) {
             throw error
