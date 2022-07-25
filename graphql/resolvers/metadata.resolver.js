@@ -8,6 +8,9 @@ module.exports = {
                 return {
                     ...metadata._doc,
                     _id: metadata.id,
+                    name: metadata.name,
+                    type: metadata.type,
+                    description: metadata.description,
                     createdAt: new Date(metadata._doc.createdAt).toISOString(),
                 }
             })
@@ -16,7 +19,7 @@ module.exports = {
         }
     },
 
-    metadataByFristName: async args => {
+    metadataByName: async args => {
         try {
             const tempList = await Metadata.findOne({ ...args });
             return tempList

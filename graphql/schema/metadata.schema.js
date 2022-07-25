@@ -15,7 +15,7 @@ let metadatachema = makeExecutableSchema({
       description: String!
     }
     type Query {
-      metadata:[Metadata!]
+      metadatas:[Metadata!]
       metadataByName(name: String!):Metadata!
     }
     type Mutation {

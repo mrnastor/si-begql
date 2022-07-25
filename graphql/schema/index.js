@@ -3,11 +3,13 @@ const {stitchSchemas} = require('@graphql-tools/stitch');
 
 const UserSchema = require('./user.schema');
 const MetadataSchema = require('./metadata.schema');
+const ManagerSchema = require('./manager.schema');
 
 const gatewaySchema =  stitchSchemas({
   subschemas: [
     UserSchema,
-    MetadataSchema
+    MetadataSchema,
+    ManagerSchema,
   ]
 });
 
