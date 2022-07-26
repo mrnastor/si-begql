@@ -1,6 +1,7 @@
 const ObjectId = require('mongodb').ObjectId;
 const _ = require('lodash');
 
+const JWTHelper = require('../../helper/jwt.helper')
 const User = require("../../models/user.model")
 
 module.exports = {
@@ -22,7 +23,7 @@ module.exports = {
     userByFristName: async args => {
         try {
             // const usersFetched = await User.findOne(obj => obj.firstName === args.firstName)
-            const tempList = await User.findOne({...args});
+            const tempList = await User.findOne({ ...args });
             return tempList
         } catch (error) {
             throw error
@@ -31,8 +32,7 @@ module.exports = {
 
     userById: async args => {
         try {
-            console.log("from user", args)
-            const tempList = _.find(await User.find(), o=>o._id.equals(new ObjectId(args.userId)));
+            const tempList = _.find(await User.find(), o => o._id.equals(new ObjectId(args.userId)));
             return tempList
         } catch (error) {
             throw error
@@ -56,6 +56,33 @@ module.exports = {
             return { ...newUser._doc, _id: newUser.id }
         } catch (error) {
             throw error
+        }
+    },
+
+    signup: async args => {
+        try {
+        } catch (error) {
+            throw error;
+        }
+    },
+
+    login: async args => {
+        try {
+            const tempUser = _.find(await User.find(), o => o.email === args.email);
+            if (args.password === tempUser.password) {
+                let tempToken = JWTHelper.generateToken(tempUser);
+                return {
+                    token: tempToken,
+                    user: tempUser
+                }
+            } else {
+                return {
+                    token: null,
+                    user: null
+                }
+            }
+        } catch (error) {
+            throw error;
         }
     },
 }
