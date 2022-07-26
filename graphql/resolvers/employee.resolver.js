@@ -8,9 +8,9 @@ const MetadataResolver = require("../resolvers/metadata.resolver");
 const UserResolver = require("../resolvers/user.resolver");
 const SkillsResolver = require("../resolvers/employeeSkill.resolver");
 const metadataResolver = require('../resolvers/metadata.resolver');
+const JWTHelper = require('../../helper/jwt.helper');
 
 function buildEmployeeObject(user, employee, manager, capability, primary, secondary, skills) {
-    console.log(primary || null, secondary, skills)
     return {
         _id: employee.id,
         firstName: user.firstName,
@@ -71,7 +71,8 @@ module.exports = {
         }
     },
 
-    employees: async () => {
+    employees: async (args, header, context) => {
+        JWTHelper.globalTokenCheck(header.get('authorization'));
         try {
             const employeesFetched = await Employee.find();
             return employeesFetched.map(async employee => {
@@ -163,6 +164,42 @@ module.exports = {
                 secondarySkillId: secondarySkillId || null,
             })).save();
             return { ...newEmployee._doc, _id: newUser.id }
+        } catch (error) {
+            throw error
+        }
+    },
+
+    tempSignUp: async args => {
+        try {
+            const {
+                firstName,
+                lastName,
+                email,
+                password,
+                primarySkillId,
+                secondarySkillId,
+            } = args
+            const user = new User({
+                firstName,
+                lastName,
+                email,
+                password
+            })
+            let managerList = await ManagerResolver.managers();
+            const newUser = await user.save()
+            const newEmployee = await (new Employee({
+                userId: newUser.id,
+                managerId: managerList[0]._id,
+                primarySkillId: primarySkillId || null,
+                secondarySkillId: secondarySkillId || null,
+            })).save();
+            return { 
+                ...newEmployee._doc, 
+                userId: newUser._doc._id,
+                firstName:newUser.firstName,
+                lastName:newUser.lastName,
+                email:newUser.email,
+            }
         } catch (error) {
             throw error
         }

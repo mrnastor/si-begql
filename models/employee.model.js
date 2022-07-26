@@ -13,7 +13,7 @@ const employeeSchema = new Schema(
     },
     capabilityId:{
       type: String,
-      required: true,
+      required: false,
     },
     primarySkillId:{
       type: String,

@@ -3,9 +3,19 @@ const { graphqlHTTP } = require('express-graphql');
 const graphqlSchema = require("./graphql/schema")
 const graphqlResolvers = require("./graphql/resolvers")
 const mongoose = require("mongoose")
+/*
+import graphqlSchema from './graphql/schema';
+import graphqlResolvers from './graphql/resolvers';
+import mongoose from 'mongoose';
+import express from 'express';
+import { graphqlHTTP } from 'express-graphql';
+*/
 
 const app = express()
 const PORT = process.env.PORT || 80;
+
+
+
 app.use(
     "/graphql",
     graphqlHTTP({

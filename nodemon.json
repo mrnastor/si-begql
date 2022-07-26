@@ -2,6 +2,8 @@
     "env": {
         "MONGO_USER": "siadmin",
         "MONGO_PASSWORD": ".Asdf!234",
-        "MONGO_DB": "si-data"
+        "MONGO_DB": "si-data",
+        "JWT_SECRET_KEY": "gfg_jwt_secret_key",
+        "TOKEN_HEADER_KEY": "gfg_token_header_key"
     }
 }

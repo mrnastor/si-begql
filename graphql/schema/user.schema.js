@@ -20,12 +20,18 @@ let userSchema = makeExecutableSchema({
       users:[User!]
       userByFristName(firstName: String!):User!
     }
+    type AuthPayload {
+      token: String
+      user: User
+    }
     type Mutation {
       addUser(user:UserInput): User
+      signup(email: String!, password: String!, name: String!): AuthPayload
+      login(email: String!, password: String!): AuthPayload
     }
   `
 })
 
 module.exports = makeExecutableSchema({
-  typeDefs:userSchema,
+  typeDefs: userSchema,
 })

@@ -61,6 +61,12 @@ let employeeSchema = makeExecutableSchema({
     }
     type Mutation {
       addEmployee(employee:EmployeeInput): Employee
+      tempSignUp(
+        firstName: String!
+        lastName: String!
+        email: String!
+        password: String!
+      ): Employee
     }
   `
 })
