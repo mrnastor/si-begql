@@ -72,7 +72,7 @@ module.exports = {
     },
 
     employees: async (args, header, context) => {
-        JWTHelper.globalTokenCheck(header.get('authorization'));
+        // JWTHelper.globalTokenCheck(header.get('authorization'));
         try {
             const employeesFetched = await Employee.find();
             return employeesFetched.map(async employee => {
