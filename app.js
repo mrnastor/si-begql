@@ -13,30 +13,21 @@ import { graphqlHTTP } from 'express-graphql';
 
 const app = express()
 const PORT = process.env.PORT || 80;
-
-var allowCrossDomain = function (req, res, next) {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
-
-    // intercept OPTIONS method
-    if ('OPTIONS' == req.method) {
-        res.send(200);
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*")
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested, Content-Type, Accept Authorization"
+    )
+    if (req.method === "OPTIONS") {
+      res.header(
+        "Access-Control-Allow-Methods",
+        "POST, PUT, PATCH, GET, DELETE"
+      )
+      return res.status(200).json({})
     }
-    else {
-        next();
-    }
-};
-
-app.configure(function () {
-    app.use(allowCrossDomain);
-    app.use(express.bodyParser());
-    app.use(express.methodOverride());
-    app.use(app.router);
-    app.use(express.static(path.join(application_root, "public")));
-    app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
-});
-
+    next()
+  })
 app.use(
     "/graphql",
     graphqlHTTP({
@@ -49,7 +40,7 @@ const uri = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWOR
 const options = { useNewUrlParser: true, useUnifiedTopology: true }
 
 mongoose.connect(uri, options)
-    .then(() => app.listen(PORT, console.log("Server is running in " + PORT)))
+    .then(() => app.listen(PORT, console.log("Server is running in "+PORT)))
     .catch(error => {
         throw error
     })
