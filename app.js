@@ -14,6 +14,28 @@ import { graphqlHTTP } from 'express-graphql';
 
 const app = express()
 const PORT = process.env.PORT || 80;
+// app.use((req, res, next) => {
+//     res.header("Access-Control-Allow-Origin", "*")
+//     res.header(
+//         "Access-Control-Allow-Headers",
+//         "Origin, X-Requested, Content-Type, Accept Authorization"
+//     )
+//     if (req.method === "OPTIONS") {
+//         res.header(
+//             "Access-Control-Allow-Methods",
+//             "POST, PUT, PATCH, GET, DELETE"
+//         )
+//         return res.status(200).json({})
+//     }
+//     next()
+// })
+// app.use(cors())
+// app.all('*', function (req, res, next) {
+//     res.header("Access-Control-Allow-Origin", "*");
+//     res.header("Access-Control-Allow-Headers", "X-Requested-With");
+//     res.header('Access-Control-Allow-Headers', 'Content-Type');
+//     next();
+// });
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*")
     res.header(
@@ -29,13 +51,6 @@ app.use((req, res, next) => {
     }
     next()
 })
-app.use(cors())
-app.all('*', function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "X-Requested-With");
-    res.header('Access-Control-Allow-Headers', 'Content-Type');
-    next();
-});
 app.use(
     "/graphql",
     graphqlHTTP({
