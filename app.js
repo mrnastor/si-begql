@@ -4,6 +4,8 @@ const graphqlSchema = require("./graphql/schema")
 const graphqlResolvers = require("./graphql/resolvers")
 const mongoose = require("mongoose")
 const cors = require("cors");
+var bodyParser = require('body-parser')
+
 /*
 import graphqlSchema from './graphql/schema';
 import graphqlResolvers from './graphql/resolvers';
@@ -14,52 +16,19 @@ import { graphqlHTTP } from 'express-graphql';
 
 const app = express()
 const PORT = process.env.PORT || 80;
-// app.use((req, res, next) => {
-//     res.header("Access-Control-Allow-Origin", "*")
-//     res.header(
-//         "Access-Control-Allow-Headers",
-//         "Origin, X-Requested, Content-Type, Accept Authorization"
-//     )
-//     if (req.method === "OPTIONS") {
-//         res.header(
-//             "Access-Control-Allow-Methods",
-//             "POST, PUT, PATCH, GET, DELETE"
-//         )
-//         return res.status(200).json({})
-//     }
-//     next()
-// })
-// app.use(cors())
-// app.all('*', function (req, res, next) {
-//     res.header("Access-Control-Allow-Origin", "*");
-//     res.header("Access-Control-Allow-Headers", "X-Requested-With");
-//     res.header('Access-Control-Allow-Headers', 'Content-Type');
-//     next();
-// });
-app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*")
-    res.header(
-        "Access-Control-Allow-Headers",
-        "Origin, X-Requested, Content-Type, Accept Authorization"
-    )
-    if (req.method === "OPTIONS") {
-        res.header(
-            "Access-Control-Allow-Methods",
-            "POST, PUT, PATCH, GET, DELETE"
-        )
-        return res.status(200).json({})
-    }
-    next()
-})
+
 app.use(
-    "/graphql",
+    "/graphql", cors(),
     graphqlHTTP({
         schema: graphqlSchema,
         rootValue: graphqlResolvers,
         graphiql: true,
     })
 )
+app.options('*', cors());
+
 const uri = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.aad0t.mongodb.net/${process.env.MONGO_DB}?retryWrites=true&w=majority`
+// const uri = `mongodb://127.0.0.1:27017`
 const options = { useNewUrlParser: true, useUnifiedTopology: true }
 
 mongoose.connect(uri, options)

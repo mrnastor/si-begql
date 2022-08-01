@@ -5,8 +5,9 @@ const JWTHelper = require('../../helper/jwt.helper')
 const User = require("../../models/user.model")
 
 module.exports = {
-    users: async () => {
+    users: async (args) => {
         try {
+            console.log("I am called",args)
             const usersFetched = await User.find()
             return usersFetched.map(user => {
                 return {
