@@ -23,6 +23,8 @@ let userSchema = makeExecutableSchema({
     type AuthPayload {
       token: String
       user: User
+      managerId:String
+      employeeId:String
     }
     type Mutation {
       addUser(user:UserInput): User

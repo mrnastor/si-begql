@@ -3,11 +3,13 @@ const _ = require('lodash');
 
 const JWTHelper = require('../../helper/jwt.helper')
 const User = require("../../models/user.model")
+const Manager = require("../../models/manager.model")
+const Employee = require("../../models/employee.model")
 
 module.exports = {
     users: async (args) => {
         try {
-            console.log("I am called",args)
+            console.log("I am called", args)
             const usersFetched = await User.find()
             return usersFetched.map(user => {
                 return {
@@ -72,8 +74,23 @@ module.exports = {
             const tempUser = _.find(await User.find(), o => o.email === args.email);
             if (args.password === tempUser.password) {
                 let tempToken = JWTHelper.generateToken(tempUser);
+                const employeeUser = _.find(await Employee.find(), o => tempUser._id.equals(new ObjectId(o.userId)));
+                const managerUser = _.find(await Manager.find(), o => tempUser._id.equals(new ObjectId(o.userId)));
+                console.log('employeeUser', employeeUser);
+                console.log('managerUser', managerUser);
+                console.log('tempUser', tempUser);
+                let employeeId = '', managerId = '';
+                if (employeeUser !== undefined) {
+                    employeeId = employeeUser._id;
+                    managerId = employeeUser.managerId
+                } else {
+                    employeeId = null;
+                    managerId = managerUser._id
+                }
                 return {
                     token: tempToken,
+                    employeeId: employeeId,
+                    managerId: managerId,
                     user: tempUser
                 }
             } else {
