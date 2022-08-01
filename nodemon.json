@@ -1,6 +1,6 @@
 {
     "env": {
-        "PORT":"3005",
+        "PORT":"80",
         "MONGO_USER": "siadmin",
         "MONGO_PASSWORD": ".Asdf!234",
         "MONGO_DB": "si-data",
