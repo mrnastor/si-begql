@@ -120,7 +120,7 @@ module.exports = {
                     employeeId: employeeId,
                     managerId: managerId,
                     user: tempUser,
-                    isAdmin: tempUser.isAdmin
+                    isAdmin: tempUser.isAdmin || false
                 }
             } else {
                 return {
