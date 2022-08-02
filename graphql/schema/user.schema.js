@@ -25,9 +25,11 @@ let userSchema = makeExecutableSchema({
       user: User
       managerId:String
       employeeId:String
+      isAdmin: Boolean
     }
     type Mutation {
       addUser(user:UserInput): User
+      addAdmin(user:UserInput): User
       signup(email: String!, password: String!, name: String!): AuthPayload
       login(email: String!, password: String!): AuthPayload
     }

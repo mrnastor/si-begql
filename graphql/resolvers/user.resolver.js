@@ -55,6 +55,28 @@ module.exports = {
                 email,
                 password
             })
+            user.isAdmin = false;
+            const newUser = await user.save()
+            return { ...newUser._doc, _id: newUser.id }
+        } catch (error) {
+            throw error
+        }
+    },
+
+    addAdmin: async args => {
+        try {
+            const {
+                firstName,
+                lastName,
+                email,
+                password } = args.user
+            const user = new User({
+                firstName,
+                lastName,
+                email,
+                password
+            })
+            user.isAdmin = true;
             const newUser = await user.save()
             return { ...newUser._doc, _id: newUser.id }
         } catch (error) {
@@ -81,22 +103,32 @@ module.exports = {
                 console.log('tempUser', tempUser);
                 let employeeId = '', managerId = '';
                 if (employeeUser !== undefined) {
+                    // user is employee
                     employeeId = employeeUser._id;
                     managerId = employeeUser.managerId
-                } else {
+                } else if (managerUser !== undefined) {
+                    // user is manager
                     employeeId = null;
                     managerId = managerUser._id
+                } else {
+                    // user is admin
+                    employeeId = null;
+                    managerId = null
                 }
                 return {
                     token: tempToken,
                     employeeId: employeeId,
                     managerId: managerId,
-                    user: tempUser
+                    user: tempUser,
+                    isAdmin: tempUser.isAdmin
                 }
             } else {
                 return {
                     token: null,
-                    user: null
+                    user: null,
+                    isAdmin: null,
+                    employeeId: null,
+                    managerId: null,
                 }
             }
         } catch (error) {

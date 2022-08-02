@@ -13,12 +13,21 @@ const userSchema = new Schema(
     },
     email: {
       type: String,
+      unique: true,
       required: true,
     },
     password: {
       type: String,
       required: true,
     },
+    password: {
+      type: String,
+      required: true,
+    },
+    isAdmin: {
+      type: Boolean,
+      required: true,
+    }
   },
   { timestamps: true }
 )
