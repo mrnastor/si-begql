@@ -66,18 +66,26 @@ module.exports = {
     deleteUser: async args => {
         try {
             const { id } = args
+            let msg = '', success = false;
             const temp = _.find(await User.find(), o => o._id.equals(new ObjectId(args.id)));
-            const tempEmployee = _.find(await Employee.find(), o => o.userId === id);
-            if (tempEmployee !== undefined) {
-                await EmployeeSkill.deleteMany({ employeeId: tempEmployee._id });
-                await Employee.deleteOne({ userId: id });
+            if (temp === undefined) {
+                success = false;
+                msg = `No user found with that ID`;
             } else {
-                const tempManager = _.find(await Manager.find(), o => o.userId === id);
-                await Manager.deleteOne({ _id: id });
+                const tempEmployee = _.find(await Employee.find(), o => o.userId === id);
+                if (tempEmployee !== undefined) {
+                    await EmployeeSkill.deleteMany({ employeeId: tempEmployee._id });
+                    await Employee.deleteOne({ userId: id });
+                } else {
+                    const tempManager = _.find(await Manager.find(), o => o.userId === id);
+                    await Manager.deleteOne({ _id: id });
+                }
+                await User.deleteOne({ _id: id });
+                msg = `Successfully deleted ${temp.firstName} ${temp.lastName}.`;
+                success = true;
             }
-            await User.deleteOne({ _id: id });
             return {
-                message: `Successfully deleted ${temp.firstName} ${temp.lastName}.`,
+                message: msg,
                 success: true
             }
         } catch (error) {
