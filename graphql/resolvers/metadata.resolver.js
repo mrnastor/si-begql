@@ -24,7 +24,7 @@ module.exports = {
 
     capabilityById: async args => {
         try {
-            const tempList = _.find(await Metadata.find(),o=>o._id.equals(new ObjectId(args.id)) && o.type=='capability');
+            const tempList = _.find(await Metadata.find(), o => o._id.equals(new ObjectId(args.id)) && o.type == 'capability');
             return tempList
         } catch (error) {
             throw error
@@ -36,7 +36,7 @@ module.exports = {
 
     metadataById: async args => {
         try {
-            const tempList = _.find(await Metadata.find(),o=>o._id.equals(new ObjectId(args.id)));
+            const tempList = _.find(await Metadata.find(), o => o._id.equals(new ObjectId(args.id)));
             return tempList
         } catch (error) {
             throw error
@@ -46,7 +46,7 @@ module.exports = {
     metadataByType: async args => {
         try {
             const metadatasFetched = await Metadata.find()
-            return metadatasFetched.filter(o=>o.type===args.type).map(metadata => {
+            return metadatasFetched.filter(o => o.type === args.type).map(metadata => {
                 return {
                     ...metadata._doc,
                     _id: metadata.id,
@@ -75,6 +75,22 @@ module.exports = {
             })
             const newMetadata = await metadata.save()
             return { ...newMetadata._doc, _id: newMetadata.id }
+        } catch (error) {
+            throw error
+        }
+    },
+
+    deleteMetadata: async args => {
+        try {
+            const {
+                id
+            } = args
+            const temp = _.find(await Metadata.find(), o => o._id.equals(new ObjectId(args.id)));
+            await Metadata.deleteOne({ _id: id });
+            return {
+                message: `Successfully deleted ${temp.name}.`,
+                success: true
+            }
         } catch (error) {
             throw error
         }

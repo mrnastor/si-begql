@@ -5,11 +5,11 @@ const JWTHelper = require('../../helper/jwt.helper')
 const User = require("../../models/user.model")
 const Manager = require("../../models/manager.model")
 const Employee = require("../../models/employee.model")
+const EmployeeSkill = require("../../models/employeeSkill.model")
 
 module.exports = {
     users: async (args) => {
         try {
-            console.log("I am called", args)
             const usersFetched = await User.find()
             return usersFetched.map(user => {
                 return {
@@ -63,6 +63,28 @@ module.exports = {
         }
     },
 
+    deleteUser: async args => {
+        try {
+            const { id } = args
+            const temp = _.find(await User.find(), o => o._id.equals(new ObjectId(args.id)));
+            const tempEmployee = _.find(await Employee.find(), o => o.userId === id);
+            if (tempEmployee !== undefined) {
+                await EmployeeSkill.deleteMany({ employeeId: tempEmployee._id });
+                await Employee.deleteOne({ userId: id });
+            } else {
+                const tempManager = _.find(await Manager.find(), o => o.userId === id);
+                await Manager.deleteOne({ _id: id });
+            }
+            await User.deleteOne({ _id: id });
+            return {
+                message: `Successfully deleted ${temp.firstName} ${temp.lastName}.`,
+                success: true
+            }
+        } catch (error) {
+            throw error
+        }
+    },
+
     addAdmin: async args => {
         try {
             const {
@@ -98,9 +120,9 @@ module.exports = {
                 let tempToken = JWTHelper.generateToken(tempUser);
                 const employeeUser = _.find(await Employee.find(), o => tempUser._id.equals(new ObjectId(o.userId)));
                 const managerUser = _.find(await Manager.find(), o => tempUser._id.equals(new ObjectId(o.userId)));
-                console.log('employeeUser', employeeUser);
-                console.log('managerUser', managerUser);
-                console.log('tempUser', tempUser);
+                // console.log('employeeUser', employeeUser);
+                // console.log('managerUser', managerUser);
+                // console.log('tempUser', tempUser);
                 let employeeId = '', managerId = '';
                 if (employeeUser !== undefined) {
                     // user is employee

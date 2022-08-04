@@ -27,11 +27,16 @@ let userSchema = makeExecutableSchema({
       employeeId:String
       isAdmin: Boolean
     }
+    type DeleteMessage {
+      message:String!
+      success: Boolean
+    }
     type Mutation {
       addUser(user:UserInput): User
       addAdmin(user:UserInput): User
       signup(email: String!, password: String!, name: String!): AuthPayload
       login(email: String!, password: String!): AuthPayload
+      deleteUser(id:String!):DeleteMessage
     }
   `
 })

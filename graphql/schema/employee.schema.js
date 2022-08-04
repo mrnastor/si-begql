@@ -15,6 +15,15 @@ let employeeSchema = makeExecutableSchema({
       primarySkill:Skill
       secondarySkill:Skill
       skills:[Skill]
+      userId:String!
+    }
+    type User {
+      _id: ID!
+      firstName: String!
+      lastName: String!
+      email: String!
+      password: String!
+      createdAt: String!
     }
     type Skill{
       _id:ID

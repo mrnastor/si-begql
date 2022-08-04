@@ -16,11 +16,11 @@ function buildEmployeeObject(user, employee, manager, capability, primary, secon
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
-        capability: {
+        capability: capability ? {
             _id: capability._id,
             name: capability.name,
             description: capability.description
-        },
+        } : null,
         manager: {
             _id: employee.managerId,
             firstName: manager.firstName,
@@ -46,6 +46,21 @@ module.exports = {
             const capabilityPerEmployee = await MetadataResolver.capabilityById({ id: employeeFound.capabilityId });
             const managerPerEmployee = await ManagerResolver.managerById({ managerId: employeeFound.managerId });
             const skills = await SkillsResolver.skillsPerEmployee({ employeeId: args.employeeId });
+            const primarySkill = await MetadataResolver.metadataById({ id: employeeFound.primarySkillId });
+            const secondarySkill = await metadataResolver.metadataById({ id: employeeFound.secondarySkillId });
+            return buildEmployeeObject(userPerEmployee, employeeFound, managerPerEmployee, capabilityPerEmployee, primarySkill, secondarySkill, skills);
+        } catch (error) {
+            throw error
+        }
+    },
+
+    employeeByUserId: async (args) => {
+        try {
+            const employeeFound = (await Employee.find()).find(o => o.userId === args.id);
+            const userPerEmployee = await UserResolver.userById({ userId: args.id });
+            const capabilityPerEmployee = await MetadataResolver.capabilityById({ id: employeeFound.capabilityId });
+            const managerPerEmployee = await ManagerResolver.managerById({ managerId: employeeFound.managerId });
+            const skills = await SkillsResolver.skillsPerEmployee({ employeeId: args.id });
             const primarySkill = await MetadataResolver.metadataById({ id: employeeFound.primarySkillId });
             const secondarySkill = await metadataResolver.metadataById({ id: employeeFound.secondarySkillId });
             return buildEmployeeObject(userPerEmployee, employeeFound, managerPerEmployee, capabilityPerEmployee, primarySkill, secondarySkill, skills);
@@ -183,7 +198,8 @@ module.exports = {
                 firstName,
                 lastName,
                 email,
-                password
+                password,
+                isAdmin: false,
             })
             let managerList = await ManagerResolver.managers();
             const newUser = await user.save()
@@ -193,12 +209,12 @@ module.exports = {
                 primarySkillId: primarySkillId || null,
                 secondarySkillId: secondarySkillId || null,
             })).save();
-            return { 
-                ...newEmployee._doc, 
+            return {
+                ...newEmployee._doc,
                 userId: newUser._doc._id,
-                firstName:newUser.firstName,
-                lastName:newUser.lastName,
-                email:newUser.email,
+                firstName: newUser.firstName,
+                lastName: newUser.lastName,
+                email: newUser.email,
             }
         } catch (error) {
             throw error

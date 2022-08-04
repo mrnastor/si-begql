@@ -26,11 +26,9 @@ app.use(
     })
 )
 app.options('*', cors());
-
 const uri = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.aad0t.mongodb.net/${process.env.MONGO_DB}?retryWrites=true&w=majority`
 // const uri = `mongodb://127.0.0.1:27017`
 const options = { useNewUrlParser: true, useUnifiedTopology: true }
-
 mongoose.connect(uri, options)
     .then(() => app.listen(PORT, console.log("Server is running in " + PORT)))
     .catch(error => {

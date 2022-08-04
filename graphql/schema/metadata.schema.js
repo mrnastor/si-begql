@@ -9,7 +9,7 @@ let metadatachema = makeExecutableSchema({
       description: String!
       createdAt: String!
     }
-    input MetadataInput{
+    input MetadataInput {
       name: String!
       type: String!
       description: String!
@@ -19,8 +19,13 @@ let metadatachema = makeExecutableSchema({
       metadataByType(type: String!):[Metadata!]
       capabilityById(id:String!):Metadata!
     }
+    type DeleteMessage {
+      message:String!
+      success: Boolean
+    }
     type Mutation {
       addMetadata(metadata:MetadataInput): Metadata
+      deleteMetadata(id:String!):DeleteMessage
     }
   `
 })
