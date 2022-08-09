@@ -39,7 +39,7 @@ module.exports = {
                     lastName: userPerManager.lastName,
                     email: userPerManager.email,
                     createdAt: new Date(manager._doc.createdAt).toISOString(),
-                    userId: usersFetched._id,
+                    userId: userPerManager._id,
                 }
             })
         } catch (error) {
