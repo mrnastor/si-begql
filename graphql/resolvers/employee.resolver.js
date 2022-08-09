@@ -16,6 +16,7 @@ function buildEmployeeObject(user, employee, manager, capability, primary, secon
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
+        userId: user._id,
         capability: capability ? {
             _id: capability._id,
             name: capability.name,
