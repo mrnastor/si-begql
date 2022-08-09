@@ -9,6 +9,7 @@ let managerSchema = makeExecutableSchema({
       email: String!
       password: String!
       createdAt: String!
+      userId:String!
     }
     input ManagerInput{
       firstName: String!
