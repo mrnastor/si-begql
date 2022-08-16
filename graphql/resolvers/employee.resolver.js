@@ -72,7 +72,11 @@ module.exports = {
 
     employeesPerManager: async (args) => {
         try {
-            const employeesFetched = _.find(await Employee.find(), o => o.managerId === args.managerId);
+            const employeesFetched = await Employee.find({ managerId: args.managerId });
+            const employeesFetcheds = await Employee.find();
+            console.log(args)
+            console.log(employeesFetcheds)
+            console.log(employeesFetched)
             return employeesFetched.map(async employee => {
                 const userPerEmployee = await UserResolver.userById({ userId: employee.userId });
                 const capabilityPerEmployee = await MetadataResolver.capabilityById({ id: employee.capabilityId });

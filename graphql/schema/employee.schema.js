@@ -24,7 +24,7 @@ let employeeSchema = makeExecutableSchema({
       elist:[Employee]
       employees:[Employee!]
       employeeById(employeeId: String!):Employee!
-      employeesPerManager(mangerId: String!):[Employee!]
+      employeesPerManager(managerId: String!):[Employee!]
       setPrimarySkill(employeeId: String, skillId: String):ApiFeedback!
       setSecondarySkill(employeeId: String, skillId: String):ApiFeedback!
     }
