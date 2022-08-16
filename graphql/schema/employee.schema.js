@@ -1,49 +1,9 @@
 const { makeExecutableSchema } = require('@graphql-tools/schema');
+const {allTypes} = require('./master.schema');
 
 let employeeSchema = makeExecutableSchema({
   typeDefs: /* GraphQL */ `
-    type Employee {
-      _id: ID!
-      firstName: String!
-      lastName: String!
-      email: String!
-      password: String!
-      capabilityId:String!
-      createdAt: String!
-      manager: ManagerPerEmployee!
-      capability: capabilityPerEmployee!
-      primarySkill:Skill
-      secondarySkill:Skill
-      skills:[Skill]
-      userId:String!
-    }
-    type User {
-      _id: ID!
-      firstName: String!
-      lastName: String!
-      email: String!
-      password: String!
-      createdAt: String!
-    }
-    type Skill{
-      _id:ID
-      name:String
-      rate:Int
-      yearsExperience: Int
-      description:String
-      skillId: String!
-    }
-    type ManagerPerEmployee {
-      _id: ID!
-      firstName: String!
-      lastName: String!
-      email: String!
-    }
-    type capabilityPerEmployee{
-      _id: ID!
-      name: String!
-      description: String!
-    }
+    ${allTypes}
     input EmployeeInput{
       firstName: String!
       lastName: String!

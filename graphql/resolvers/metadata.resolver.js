@@ -2,6 +2,7 @@ const ObjectId = require('mongodb').ObjectId;
 const _ = require('lodash');
 
 const Metadata = require("../../models/metadata.model")
+const EmployeeSkill = require("../../models/employeeSkill.model")
 
 module.exports = {
     metadatas: async () => {
@@ -86,6 +87,7 @@ module.exports = {
                 id
             } = args
             const temp = _.find(await Metadata.find(), o => o._id.equals(new ObjectId(args.id)));
+            await EmployeeSkill.deleteMany({metadataId:id})
             await Metadata.deleteOne({ _id: id });
             return {
                 message: `Successfully deleted ${temp.name}.`,
@@ -93,6 +95,22 @@ module.exports = {
             }
         } catch (error) {
             throw error
+        }
+    },
+
+    updateMetadata: async args => {
+        try {
+            let doc = await Metadata.findOneAndUpdate(
+                { _id: args.id },
+                args.metadata,
+                { new: true }
+            )
+            return doc;
+        } catch (error) {
+            if (error.kind === 'ObjectId') {
+                throw new Error('Metadata not found.')
+            } else
+                throw error.message
         }
     },
 }

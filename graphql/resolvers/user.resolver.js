@@ -93,6 +93,22 @@ module.exports = {
         }
     },
 
+    updateUser: async args => {
+        try {
+            let doc = await User.findOneAndUpdate(
+                { _id: args.id },
+                args.user,
+                { new: true }
+            )
+            return doc;
+        } catch (error) {
+            if (error.kind === 'ObjectId') {
+                throw new Error('User not found.')
+            } else
+                throw error.message
+        }
+    },
+
     addAdmin: async args => {
         try {
             const {

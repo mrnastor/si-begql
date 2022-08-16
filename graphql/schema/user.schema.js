@@ -31,12 +31,18 @@ let userSchema = makeExecutableSchema({
       message:String!
       success: Boolean
     }
+    input UserUpdateFields {
+      firstName: String
+      lastName: String
+      email: String
+    }
     type Mutation {
       addUser(user:UserInput): User
       addAdmin(user:UserInput): User
       signup(email: String!, password: String!, name: String!): AuthPayload
       login(email: String!, password: String!): AuthPayload
-      deleteUser(id:String!):DeleteMessage
+      deleteUser(id:String!): DeleteMessage
+      updateUser(id:String!, user:UserUpdateFields!): User
     }
   `
 })

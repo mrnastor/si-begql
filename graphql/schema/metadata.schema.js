@@ -23,9 +23,15 @@ let metadatachema = makeExecutableSchema({
       message:String!
       success: Boolean
     }
+    input MetadataUpdateFields {
+      name: String
+      type: String
+      description: String
+    }
     type Mutation {
       addMetadata(metadata:MetadataInput): Metadata
-      deleteMetadata(id:String!):DeleteMessage
+      deleteMetadata(id:String!): DeleteMessage
+      updateMetadata(id:String!, metadata:MetadataUpdateFields): Metadata
     }
   `
 })

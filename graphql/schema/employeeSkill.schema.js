@@ -1,16 +1,14 @@
 const { makeExecutableSchema } = require('@graphql-tools/schema');
-
+const { allTypes } = require('./master.schema');
 let employeeSkillSchema = makeExecutableSchema({
   typeDefs: /* GraphQL */ `
+    ${allTypes}
     type EmployeeSkill {
-      _id: ID
-      employeeId: String,
-      metadataId: String,
+      _id: String
+      employeeId: String
+      skill: Metadata
       rate: Int,
       yearsExperience: Int
-      name: String
-      description: String
-      skillId: String
     }
     input EmployeeSkillInput{
       employeeId: String!,
@@ -23,6 +21,10 @@ let employeeSkillSchema = makeExecutableSchema({
       skillsPerEmployee(employeeId:String!):[EmployeeSkill]
       skillById(employeeSkillId: String!): EmployeeSkill
     }
+    type DeleteMessage {
+      message:String!
+      success: Boolean
+    }
     type Mutation{
       addEmployeeSkills(
         employeeId: String!,
@@ -30,6 +32,7 @@ let employeeSkillSchema = makeExecutableSchema({
         rate: Int!,
         yearsExperience: Int!
       ):EmployeeSkill
+      deleteEmployeeSkill (id: String!) : DeleteMessage
     }
   `
 })
