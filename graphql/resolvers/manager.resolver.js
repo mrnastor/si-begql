@@ -2,7 +2,9 @@ const ObjectId = require('mongodb').ObjectId;
 
 const User = require("../../models/user.model")
 const Manager = require("../../models/manager.model")
+const Employee = require("../../models/employee.model")
 const _ = require('lodash');
+const { EmployeeSkillType } = require('../schema/master.schema');
 
 function buildManagerObject(user, manager) {
     return {
@@ -59,13 +61,50 @@ module.exports = {
                 firstName,
                 lastName,
                 email,
-                password
+                password,
+                isAdmin: false,
             })
             const newUser = await user.save()
             const newManager = await (new Manager({
                 userId: newUser.id
             })).save();
             return { ...newManager._doc, _id: newManager.id }
+        } catch (error) {
+            throw error
+        }
+    },
+
+    deleteManager: async args => {
+        try {
+            console.log(args);
+            let employeeList = await Employee.find({ managerId: args.id });
+            if (employeeList.length > 0) {
+                return {
+                    success: false,
+                    message: `Re-assign all (${employeeList.length}) employees first before removing.`
+                }
+            } else {
+                let managerToDelete = await Manager.findOne({ _id: args.id });
+                if (!Boolean(managerToDelete)) {
+                    return {
+                        success: false,
+                        message: `Cannot find Manager`
+                    }
+                }
+                let userToDelete = await User.findOne({ _id: managerToDelete.userId });
+                if (!Boolean(userToDelete)) {
+                    return {
+                        success: false,
+                        message: `Cannot find User. Contact Admin for resolve.`
+                    }
+                }
+                await Manager.deleteOne({ _id: args.id });
+                await User.deleteOne({ _id: managerToDelete.userId });
+                return {
+                    success: true,
+                    message: `Successfully Deleted ${userToDelete.firstName} ${userToDelete.lastName}`
+                }
+            }
         } catch (error) {
             throw error
         }

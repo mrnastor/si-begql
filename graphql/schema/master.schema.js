@@ -46,15 +46,24 @@ const EmployeeSkillType = `
             yearsExperience: Int
         }
   `
+
+const DeleteMessage = `
+    type DeleteMessage {
+        success: Boolean
+        message: String
+    }
+`
 module.exports = {
     EmployeeType: EmployeeType,
     MetadataType: MetadataType,
     ManagerType: ManagerType,
     EmployeeSkillType: EmployeeSkillType,
+    DeleteMessage:DeleteMessage,
     allTypes: ''.concat(
         MetadataType,
         ManagerType,
         EmployeeType,
         EmployeeSkillType,
+        DeleteMessage,
     )
 }
