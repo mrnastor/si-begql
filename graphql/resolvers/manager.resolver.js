@@ -65,8 +65,8 @@ module.exports = {
                 isAdmin: false,
             })
 
-            let checkUser = await User.find({email:email});
-            if(checkUser.length>0){
+            let checkUser = await User.find({ email: email });
+            if (checkUser.length > 0) {
                 throw new Error(`${email} is already exsiting`)
             }
 
@@ -74,7 +74,13 @@ module.exports = {
             const newManager = await (new Manager({
                 userId: newUser.id
             })).save();
-            return { ...newManager._doc, _id: newManager.id }
+            return {
+                _id: newManager._id,
+                firstName: newUser.firstName,
+                lastName: newUser.lastName,
+                email: newUser.email,
+                userId: newUser.userId,
+            }
         } catch (error) {
             throw error
         }
