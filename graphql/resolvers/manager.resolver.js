@@ -79,7 +79,7 @@ module.exports = {
                 firstName: newUser.firstName,
                 lastName: newUser.lastName,
                 email: newUser.email,
-                userId: newUser.userId,
+                userId: newUser._id,
             }
         } catch (error) {
             throw error
