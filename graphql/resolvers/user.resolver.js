@@ -78,7 +78,8 @@ module.exports = {
                     await Employee.deleteOne({ userId: id });
                 } else {
                     const tempManager = _.find(await Manager.find(), o => o.userId === id);
-                    await Manager.deleteOne({ _id: id });
+                    // await Manager.deleteOne({ _id: id });
+                    return deleteManager(tempManager._id);
                 }
                 await User.deleteOne({ _id: id });
                 msg = `Successfully deleted ${temp.firstName} ${temp.lastName}.`;
@@ -179,6 +180,41 @@ module.exports = {
             }
         } catch (error) {
             throw error;
+        }
+    },
+
+    deleteManager: async args => {
+        try {
+            let employeeList = await Employee.find({ managerId: args.id });
+            if (employeeList.length > 0) {
+                return {
+                    success: false,
+                    message: `Re-assign all (${employeeList.length}) employees first before removing.`
+                }
+            } else {
+                let managerToDelete = await Manager.findOne({ _id: args.id });
+                if (!Boolean(managerToDelete)) {
+                    return {
+                        success: false,
+                        message: `Cannot find Manager`
+                    }
+                }
+                let userToDelete = await User.findOne({ _id: managerToDelete.userId });
+                if (!Boolean(userToDelete)) {
+                    return {
+                        success: false,
+                        message: `Cannot find User. Contact Admin for resolve.`
+                    }
+                }
+                await Manager.deleteOne({ _id: args.id });
+                await User.deleteOne({ _id: managerToDelete.userId });
+                return {
+                    success: true,
+                    message: `Successfully Deleted ${userToDelete.firstName} ${userToDelete.lastName}`
+                }
+            }
+        } catch (error) {
+            throw error
         }
     },
 }
