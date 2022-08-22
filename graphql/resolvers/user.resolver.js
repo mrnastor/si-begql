@@ -127,14 +127,13 @@ module.exports = {
                                 message: `Cannot find Manager`
                             }
                         }
-                        let userToDelete = await User.findOne({ _id: managerToDelete.userId });
                         if (!Boolean(userToDelete)) {
                             return {
                                 success: false,
                                 message: `Cannot find User. Contact Admin for resolve.`
                             }
                         }
-                        await Manager.deleteOne({ _id: args.id });
+                        await Manager.deleteOne({ _id: managerToDelete._id });
                         await User.deleteOne({ _id: managerToDelete.userId });
                         return {
                             success: true,
