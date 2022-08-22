@@ -173,7 +173,8 @@ module.exports = {
                 firstName,
                 lastName,
                 email,
-                password
+                password,
+                isAdmin:false
             })
             let checkUser = await User.find({ email: email });
             if (checkUser.length > 0) {
