@@ -188,7 +188,13 @@ module.exports = {
                 primarySkillId: primarySkillId || null,
                 secondarySkillId: secondarySkillId || null,
             })).save();
-            return { ...newEmployee._doc, _id: newUser.id }
+            return { 
+                ...newEmployee._doc,
+                userId: newUser._doc._id,
+                firstName: newUser.firstName,
+                lastName: newUser.lastName,
+                email: newUser.email,
+             }
         } catch (error) {
             throw error
         }
