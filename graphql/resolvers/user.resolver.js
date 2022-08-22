@@ -87,7 +87,7 @@ module.exports = {
             }
             return {
                 message: msg,
-                success: true
+                success: success
             }
         } catch (error) {
             throw error
