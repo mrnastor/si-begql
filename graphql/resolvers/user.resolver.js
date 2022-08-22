@@ -98,7 +98,6 @@ module.exports = {
         }
     },
 
-
     deleteUser: async args => {
         try {
             const { id } = args

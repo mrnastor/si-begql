@@ -175,10 +175,14 @@ module.exports = {
                 email,
                 password
             })
+            let checkUser = await User.find({ email: email });
+            if (checkUser.length > 0) {
+                throw new Error(`${email} is already exsiting`)
+            }
             const newUser = await user.save()
             const newEmployee = await (new Employee({
                 userId: newUser.id,
-                capabilityId: capabilityId,
+                capabilityId: capabilityId || null,
                 managerId: managerId,
                 primarySkillId: primarySkillId || null,
                 secondarySkillId: secondarySkillId || null,
@@ -206,6 +210,10 @@ module.exports = {
                 password,
                 isAdmin: false,
             })
+            let checkUser = await User.find({ email: email });
+            if (checkUser.length > 0) {
+                throw new Error(`${email} is already exsiting`)
+            }
             let managerList = await ManagerResolver.managers();
             const newUser = await user.save()
             const newEmployee = await (new Employee({
