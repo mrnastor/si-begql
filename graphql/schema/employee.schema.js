@@ -29,7 +29,13 @@ let employeeSchema = makeExecutableSchema({
       setSecondarySkill(employeeId: String, skillId: String):ApiFeedback!
     }
     type Mutation {
-      addEmployee(employee:EmployeeInput): Employee
+      addEmployee(
+        firstName: String!
+        lastName: String!
+        email: String!
+        password: String!
+        managerId:String!
+        ): Employee
       tempSignUp(
         firstName: String!
         lastName: String!

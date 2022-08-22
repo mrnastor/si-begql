@@ -168,7 +168,7 @@ module.exports = {
                 capabilityId,
                 primarySkillId,
                 secondarySkillId,
-            } = args.employee
+            } = args
             const user = new User({
                 firstName,
                 lastName,
