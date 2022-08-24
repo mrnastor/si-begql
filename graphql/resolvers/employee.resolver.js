@@ -17,16 +17,14 @@ function buildEmployeeObject(user, employee, manager, capability, primary, secon
         lastName: user.lastName,
         email: user.email,
         userId: user._id,
-        capability: capability ? {
-            _id: capability._id,
-            name: capability.name,
-            description: capability.description
-        } : null,
+        capability: capability || null,
+        capabilityId: capability ? capability._id : null,
         manager: {
             _id: employee.managerId,
             firstName: manager.firstName,
             lastName: manager.lastName,
             email: manager.email,
+            userId:manager.userId
         },
         primarySkill: primary || null,
         secondarySkill: secondary || null,
@@ -58,6 +56,7 @@ module.exports = {
     employeeByUserId: async (args) => {
         try {
             const employeeFound = (await Employee.find()).find(o => o.userId === args.id);
+            console.log(employeeFound)
             const userPerEmployee = await UserResolver.userById({ userId: args.id });
             const capabilityPerEmployee = await MetadataResolver.capabilityById({ id: employeeFound.capabilityId });
             const managerPerEmployee = await ManagerResolver.managerById({ managerId: employeeFound.managerId });
