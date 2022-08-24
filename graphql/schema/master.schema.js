@@ -7,7 +7,7 @@ const EmployeeType = `
             lastName: String!
             email: String!
             password: String!
-            capabilityId:String!
+            capabilityId:String
             createdAt: String!
             manager: Manager!
             capability: Metadata
