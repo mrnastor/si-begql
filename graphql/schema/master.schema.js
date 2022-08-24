@@ -10,7 +10,7 @@ const EmployeeType = `
             capabilityId:String!
             createdAt: String!
             manager: Manager!
-            capability: Metadata!
+            capability: Metadata
             primarySkill:Metadata
             secondarySkill:Metadata
             skills:[EmployeeSkill]
