@@ -121,4 +121,36 @@ module.exports = {
             throw error
         }
     },
+
+    allManagerStat: async args => {
+        try {
+            let mgrCount = 0;
+            let noemp = 0;
+            let allManagersWithEmp = await Employee.find().distinct('managerId');
+            let allManagers = await Manager.find();
+            let allManagersWithoutEmp = await Manager.find({ _id: { '$nin': allManagersWithEmp } });
+            return {
+                count: allManagers.length,
+                noEmployee: allManagersWithoutEmp.length
+            }
+        }
+        catch (e) {
+            throw (e);
+        }
+    },
+
+    specificManagerStat: async args => {
+        try {
+            let { id } = args;
+            let employees = (await Employee.find({ managerId: id })).length;
+
+            return {
+                employeeCount: employeeCount,
+                industryCount: 0,
+                capabilityCount: 0,
+                skillCount: 0
+            }
+        }
+        catch (e) { throw (e) }
+    }
 }

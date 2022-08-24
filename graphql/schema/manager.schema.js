@@ -19,9 +19,21 @@ let managerSchema = makeExecutableSchema({
       email: String!
       password: String!
     }
+    type AllManagerStatType {
+        count: Int
+        noEmployee: Int
+      }
+    type SpecificManagerStatType {
+      employeeCount: Int
+      industryCount: Int
+      capabilityCount: Int
+      skillCount: Int      
+      }
     type Query {
       managers:[Manager!]
       managerById(id: String!):Manager!
+      allManagerStat: AllManagerStatType!
+      specificManagerStat(id:String!): SpecificManagerStatType!
     }
     type Mutation {
       addManager(manager:ManagerInput): Manager

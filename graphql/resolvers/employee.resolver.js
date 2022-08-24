@@ -174,7 +174,7 @@ module.exports = {
                 lastName,
                 email,
                 password,
-                isAdmin:false
+                isAdmin: false
             })
             let checkUser = await User.find({ email: email });
             if (checkUser.length > 0) {
@@ -188,13 +188,13 @@ module.exports = {
                 primarySkillId: primarySkillId || null,
                 secondarySkillId: secondarySkillId || null,
             })).save();
-            return { 
+            return {
                 ...newEmployee._doc,
                 userId: newUser._doc._id,
                 firstName: newUser.firstName,
                 lastName: newUser.lastName,
                 email: newUser.email,
-             }
+            }
         } catch (error) {
             throw error
         }
@@ -238,6 +238,34 @@ module.exports = {
             }
         } catch (error) {
             throw error
+        }
+    },
+
+    updateEmployee: async args => {
+        const {
+            user,
+            employee,
+        } = args;
+        try {
+            let userDoc = await User.findOneAndUpdate(
+                { _id: user._id },
+                user,
+                { new: true }
+            )
+            let empDoc = await Employee.findOneAndUpdate(
+                { _id: employee._id },
+                employee,
+                { new: true }
+            )
+            return {
+                success:true,
+                message:'Updated.'
+            };
+        } catch (error) {
+            if (error.kind === 'ObjectId') {
+                throw new Error('User not found.')
+            } else
+                throw error.message
         }
     },
 }

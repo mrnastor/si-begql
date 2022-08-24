@@ -27,8 +27,14 @@ let employeeSchema = makeExecutableSchema({
       employeesPerManager(managerId: String!):[Employee!]
       setPrimarySkill(employeeId: String, skillId: String):ApiFeedback!
       setSecondarySkill(employeeId: String, skillId: String):ApiFeedback!
+      employeeByUserId(id:String!):Employee!
     }
     type Mutation {
+      updateEmployee(
+        firstName:String!
+        # user:User!
+        # employee:Employee!
+      ):DeleteMessage
       addEmployee(
         firstName: String!
         lastName: String!
