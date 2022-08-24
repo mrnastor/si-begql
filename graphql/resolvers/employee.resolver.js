@@ -11,6 +11,7 @@ const metadataResolver = require('../resolvers/metadata.resolver');
 const JWTHelper = require('../../helper/jwt.helper');
 
 function buildEmployeeObject(user, employee, manager, capability, primary, secondary, skills) {
+    console.log(user);
     return {
         _id: employee.id,
         firstName: user.firstName,

@@ -41,6 +41,9 @@ let employeeSchema = makeExecutableSchema({
         email: String!
         password: String!
         managerId:String!
+        capabilityId:String,
+        primarySkillId:String,
+        secondarySkillId:String,
         ): Employee
       tempSignUp(
         firstName: String!
