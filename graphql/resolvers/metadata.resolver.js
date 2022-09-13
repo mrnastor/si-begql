@@ -2,7 +2,8 @@ const ObjectId = require('mongodb').ObjectId;
 const _ = require('lodash');
 
 const Metadata = require("../../models/metadata.model")
-const EmployeeSkill = require("../../models/employeeSkill.model")
+const EmployeeSkill = require("../../models/employeeSkill.model");
+const { isCompositeType } = require('graphql');
 
 module.exports = {
     metadatas: async () => {
@@ -87,7 +88,7 @@ module.exports = {
                 id
             } = args
             const temp = _.find(await Metadata.find(), o => o._id.equals(new ObjectId(args.id)));
-            await EmployeeSkill.deleteMany({metadataId:id})
+            await EmployeeSkill.deleteMany({ metadataId: id })
             await Metadata.deleteOne({ _id: id });
             return {
                 message: `Successfully deleted ${temp.name}.`,
@@ -111,6 +112,35 @@ module.exports = {
                 throw new Error('Metadata not found.')
             } else
                 throw error.message
+        }
+    },
+
+    metadataList: async args => {
+        try {
+            const { page = 0, itemsPerPage = 100, searchKeyword = '', filterFields = [], type } = args.options;
+            console.log(page, itemsPerPage, searchKeyword, filterFields)
+            let queryVar = [];
+            filterFields?.forEach((item, index) => {
+                queryVar.push({});
+                queryVar[index][item] = new RegExp(searchKeyword, 'i');
+            })
+            let fullquery = {
+                $and: [
+                    { type: type }
+                ]
+            };
+            if (queryVar.length > 0) {
+                fullquery.$and.push({ $or: queryVar })
+            }
+            const metadatasFetched = await Metadata.find(fullquery);
+            return {
+                currentPage: page,
+                totalPages: Math.ceil(metadatasFetched.length / itemsPerPage),
+                totalItems: metadatasFetched.length,
+                paginatedList: metadatasFetched.splice(itemsPerPage * page, itemsPerPage)
+            }
+        } catch (error) {
+            throw error
         }
     },
 }
