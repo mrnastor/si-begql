@@ -1,7 +1,10 @@
 const ObjectId = require('mongodb').ObjectId;
+const mongoose = require("mongoose")
 const _ = require('lodash');
 
 const User = require("../../models/user.model")
+const EmployeeSkill = require("../../models/employeeSkill.model")
+const Metadata = require("../../models/metadata.model")
 const Employee = require("../../models/employee.model")
 const ManagerResolver = require("../resolvers/manager.resolver");
 const MetadataResolver = require("../resolvers/metadata.resolver");
@@ -9,9 +12,9 @@ const UserResolver = require("../resolvers/user.resolver");
 const SkillsResolver = require("../resolvers/employeeSkill.resolver");
 const metadataResolver = require('../resolvers/metadata.resolver');
 const JWTHelper = require('../../helper/jwt.helper');
+const { filter } = require('lodash');
 
 function buildEmployeeObject(user, employee, manager, capability, primary, secondary, skills) {
-    console.log(user);
     return {
         _id: employee.id,
         firstName: user.firstName,
@@ -25,7 +28,7 @@ function buildEmployeeObject(user, employee, manager, capability, primary, secon
             firstName: manager.firstName,
             lastName: manager.lastName,
             email: manager.email,
-            userId:manager.userId
+            userId: manager.userId
         },
         primarySkill: primary || null,
         secondarySkill: secondary || null,
@@ -73,10 +76,6 @@ module.exports = {
     employeesPerManager: async (args) => {
         try {
             const employeesFetched = await Employee.find({ managerId: args.managerId });
-            const employeesFetcheds = await Employee.find();
-            console.log(args)
-            console.log(employeesFetcheds)
-            console.log(employeesFetched)
             return employeesFetched.map(async employee => {
                 const userPerEmployee = await UserResolver.userById({ userId: employee.userId });
                 const capabilityPerEmployee = await MetadataResolver.capabilityById({ id: employee.capabilityId });
@@ -258,8 +257,8 @@ module.exports = {
                 { new: true }
             )
             return {
-                success:true,
-                message:'Updated.'
+                success: true,
+                message: 'Updated.'
             };
         } catch (error) {
             if (error.kind === 'ObjectId') {
@@ -268,4 +267,101 @@ module.exports = {
                 throw error.message
         }
     },
+
+    employeeList: async (args) => {
+        const {
+            page = 0,
+            itemsPerPage = 100,
+            searchKeyword = '',
+            managerId = '',
+            capabilities = [],
+            primarySkills = [],
+            secondarySkills = [],
+            skills = [],
+            filterFields = [],
+            skillRate = undefined,
+            skillYearExperience = undefined
+        } = args.options;
+        try {
+            // Query builder for EmployeeSkills that match in 'skills' field
+            let empSkillsQuery = {
+                metadataId: { $in: skills }
+            };
+            if (skillRate !== undefined) {
+                empSkillsQuery['rate'] = { $eq: skillRate }
+            }
+            if (skillYearExperience !== undefined) {
+                empSkillsQuery['yearsExperience'] = { $eq: skillYearExperience }
+            }
+            let empSkills = await EmployeeSkill
+                .find(empSkillsQuery)
+                .populate({ path: "metadataId", model: Metadata });
+
+            // Query builder for Users that match filterFields (firstName, lastName and/or email)
+            let userQuery = {};
+            filterFields.forEach((field, index) => {
+                userQuery[field] = new RegExp(searchKeyword, "i");
+            })
+            let users = await User.find(userQuery);
+            // console.log(users.map(u => `${u.firstName} ${u.lastName} - ${u._id}`), userQuery)
+
+            // Query builder for employees initialization
+            let empQuery = {
+                $and: [
+                    { _id: { $ne: null } },
+                ],
+            };
+
+            // Query builder for employees with specific skills if 'skills' field is populated
+            if (skills.length > 0) {
+                empQuery.$and.push({ _id: { $in: empSkills.map(s => (s.employeeId)) } })
+            }
+
+            // Query builder for employees with user fields if 'filterFields' field is populated
+            if (filterFields.length > 0) {
+                empQuery.$and.push({ userId: { $in: users.map(u => u._id) } })
+            }
+
+            //Query builder for employees that match the employee details from args
+            if (managerId.length > 0) {
+                empQuery.$and.push({ "managerId": managerId })
+            }
+            if (capabilities.length > 0) {
+                empQuery.$and.push({ "capabilityId": { $in: capabilities } })
+            }
+            if (primarySkills.length > 0) {
+                empQuery.$and.push({ "primarySkillId": { $in: primarySkills } })
+            }
+            if (secondarySkills.length > 0) {
+                empQuery.$and.push({ "secondarySkillId": { $in: secondarySkills } })
+            }
+            const empFetched = await Employee.find(empQuery).populate({ path: "userId", model: User });
+            // console.log(empFetched);
+            // console.log(empFetched.map(u => `${u.userId.firstName} ${u.userId.lastName} - ${u.userId._id}`), empFetched.length)
+            // console.log(empQuery)
+
+            let emplist = empFetched.map(async employee => {
+                const userPerEmployee = await UserResolver.userById({ userId: employee.userId });
+                const capabilityPerEmployee = await MetadataResolver.capabilityById({ id: employee.capabilityId });
+                const managerPerEmployee = await ManagerResolver.managerById({ managerId: employee.managerId });
+                const skills = await SkillsResolver.skillsPerEmployee({ employeeId: employee._id });
+                const primarySkill = await MetadataResolver.metadataById({ id: employee.primarySkillId });
+                const secondarySkill = await metadataResolver.metadataById({ id: employee.secondarySkillId });
+                return buildEmployeeObject(userPerEmployee, employee, managerPerEmployee, capabilityPerEmployee, primarySkill, secondarySkill, skills);
+            })
+            let totalPages = Math.ceil(emplist.length / itemsPerPage);
+            if (totalPages > 0 && page >= totalPages) {
+                throw new Error(`Acessing page (${page + 1}) more than total pages (${totalPages})`)
+            } else
+                return {
+                    currentPage: page,
+                    totalPages: totalPages,
+                    totalItems: emplist.length,
+                    paginatedList: emplist.splice(itemsPerPage * page, itemsPerPage)
+                };
+        }
+        catch (e) {
+            throw (e);
+        }
+    }
 }
