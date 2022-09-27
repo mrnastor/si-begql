@@ -1,5 +1,5 @@
 const { makeExecutableSchema } = require('@graphql-tools/schema');
-const {allTypes} = require('./master.schema');
+const { allTypes } = require('./master.schema');
 
 let employeeSchema = makeExecutableSchema({
   typeDefs: /* GraphQL */ `
@@ -28,6 +28,7 @@ let employeeSchema = makeExecutableSchema({
       setPrimarySkill(employeeId: String, skillId: String):ApiFeedback!
       setSecondarySkill(employeeId: String, skillId: String):ApiFeedback!
       employeeByUserId(id:String!):Employee!
+      employeeList(options:AdvancedEmployeeListInput!) : AdvancedEmployeeList!
     }
     type Mutation {
       updateEmployee(

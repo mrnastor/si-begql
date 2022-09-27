@@ -72,21 +72,48 @@ Delete Message template to show user if request is success or not.
   }
 `
 
+const PaginatedListInput = `
+    "The page number user wants to view. Starts with 0 as first page."
+    page: Int
+    "Number of items showed per page. Will be used to calculate totalPages."
+    itemsPerPage: Int
+    "Search keyword for all attributes."
+    searchKeyword: String
+    "Field/s of the table to search in."
+    filterFields: [String]
+`
+
 const AdvancedListInput = `
 """
 Input Object to filter, search, and paginate the list
 """
     input AdvancedListInput {
-        "The page number user wants to view. Starts with 0 as first page."
-        page: Int
-        "Number of items showed per page. Will be used to calculate totalPages."
-        itemsPerPage: Int
-        "Search keyword for all attributes."
-        searchKeyword: String
-        "Field/s of the table to search in."
-        filterFields: [String]
+        ${PaginatedListInput}
         "specific type of metadata"
         type: String!
+    }
+`;
+
+const AdvancedEmployeeListInput = `
+"""
+Input Object to filter, search, and paginate the list
+"""
+    input AdvancedEmployeeListInput {
+        ${PaginatedListInput}
+        "Manager to filter the with the request"
+        managerId: String
+        "List of Capabilities to filter with the request"
+        capabilities: [String]
+        "List of Skills to filter with the request"
+        skills: [String]
+        "List of PrimarySkill to filter with the request"
+        primarySkills: [String]
+        "List of SecondarySkill to filter with the request"
+        secondarySkills: [String]
+        "Rate of skill you want to filter. Works only if 'Skills' is populated"
+        skillRate: Int
+        "Year Experience of skill you want to filter. Works only if 'Skills' is populated"
+        skillYearExperience: Int
     }
 `;
 
@@ -105,7 +132,7 @@ Metadata object list that provides the filtered, searched, and paginated list.
 """
     type AdvancedMetadataList {
         ${AdvancedList}
-        " Paginated list shows the list of items according to the currentPage and itemsPerPage "
+        " Paginated list shows the list i items according to the currentPage and itemsPerPage "
         paginatedList: [Metadata]
     }
 `;
@@ -142,6 +169,7 @@ module.exports = {
     AdvancedEmployeeList: AdvancedEmployeeList,
     AdvancedManagerList: AdvancedManagerList,
     AdvancedMetadataList: AdvancedMetadataList,
+    AdvancedEmployeeListInput: AdvancedEmployeeListInput,
     allTypes: ''.concat(
         MetadataType,
         ManagerType,
@@ -151,6 +179,8 @@ module.exports = {
         AdvancedListInput,
         AdvancedEmployeeList,
         AdvancedManagerList,
-        AdvancedMetadataList,
+        AdvancedEmployeeListInput,
+        AdvancedEmployeeList,
+        AdvancedMetadataList
     )
 }
